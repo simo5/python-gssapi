@@ -13,6 +13,16 @@ cdef extern from "gssapi/gssapi_ext.h":
                                    gss_OID display_as_name_type,
                                    gss_buffer_t display_name) nogil
 
+    ctypedef struct gss_buffer_set_desc:
+        size_t count
+        gss_buffer_desc *elements
+
+    OM_uint32 gss_inquire_name(OM_uint32 *min_stat,
+                               gss_name_t name,
+                               int *name_is_MN,
+                               gss_OID *MN_mech,
+                               gss_buffer_set_desc **attrs) nogil
+
 
 def display_name_ext(Name name not None, OID name_type not None):
     """
@@ -44,5 +54,34 @@ def display_name_ext(Name name not None, OID name_type not None):
         text = display_name.value[:display_name.length]
         gss_release_buffer(&min_stat, &display_name)
         return DisplayNameResult(text, name_type)
+    else:
+        raise GSSError(maj_stat, min_stat)
+
+
+def inquire_name(Name name not None):
+    """
+    Inquire the given name and output the set of attributes associated
+    to the name.
+
+    Args:
+        name (Name): the name in question
+
+    Returns:
+        InquireNameResults: the resulting attributes
+
+    Raises:
+        GSSError
+    """
+
+    cdef OM_uint32 maj_stat, min_stat
+    cdef int is_MN
+    cdef gss_OID mech
+    cdef gss_buffer_set_desc *attrs
+
+    maj_stat = gss_inquire_name(&min_stat, name.raw_name,
+                                &is_MN, &mech, &attrs)
+
+    if maj_stat == GSS_S_COMPLETE:
+        ...TODO..
     else:
         raise GSSError(maj_stat, min_stat)
