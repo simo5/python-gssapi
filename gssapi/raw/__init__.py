@@ -36,3 +36,10 @@ try:
     import gssapi.raw.mech_krb5  # noqa
 except ImportError:
     pass
+
+# optional RFC 6808 support
+try:
+    from gssapi.raw.ext_rfc6680 import *  # noqa
+except ImportError:
+    pass
+

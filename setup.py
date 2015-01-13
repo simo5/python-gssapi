@@ -191,6 +191,7 @@ setup(
         extension_file('cred_store', 'gss_store_cred_into'),
         extension_file('rfc5588', 'gss_store_cred'),
         extension_file('cred_imp_exp', 'gss_import_cred'),
+        extension_file('rfc6680', 'gss_display_name_ext'),
     ]),
     keywords=['gssapi', 'security'],
     install_requires=[

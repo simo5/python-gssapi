@@ -449,6 +449,23 @@ class TestBaseUtilities(_GSSAPIKerberosTestCase):
         res.shouldnt_be_none()
         res.should_include(gb.MechType.kerberos)
 
+    @_extension_test('rfc6680', 'RFC 6680')
+    def test_display_name_ext(self):
+        imported_name = gb.import_name(TARGET_SERVICE_NAME,
+                                       gb.NameType.hostbased_service)
+        displ_resp = gb.display_name_ext(imported_name, gb.MechType.kerberos)
+
+        displ_resp.shouldnt_be_none()
+
+        (displayed_name, out_type) = displ_resp
+
+        displayed_name.shouldnt_be_none()
+        displayed_name.should_be_a(bytes)
+        displayed_name.should_be(TARGET_SERVICE_NAME)
+
+        out_type.shouldnt_be_none()
+        out_type.should_be(gb.NameType.hostbased_service)
+
 
 class TestIntEnumFlagSet(unittest.TestCase):
     def test_create_from_int(self):
